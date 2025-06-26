@@ -8,7 +8,7 @@ services:
       - "3005:3000" # 내 PC 3000번 -> 컨테이너 3000번 (React 개발 서버)으로 직접 연결
     volumes:
       - ./frontend:/app
-      - /app/node_modules
+      - ./frontend/public:/app/public
     restart: always
     environment: # React 개발 서버가 외부 접속을 허용하도록 설정
       - WDS_SOCKET_PORT=0
