@@ -19,8 +19,7 @@ services:
     ports:
       - "3001:3001"
     volumes:
-      - ./backend:/app
-      - /app/node_modules
+      - ./backend/src:/app/src
     env_file: ./.env
     depends_on:
       - mysql
