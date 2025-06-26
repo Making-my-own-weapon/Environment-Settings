@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: ./frontend
+    container_name: coconut-frontend
+    ports:
+      - "3005:3000" # 내 PC 3000번 -> 컨테이너 3000번 (React 개발 서버)으로 직접 연결
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    restart: always
+    environment: # React 개발 서버가 외부 접속을 허용하도록 설정
+      - WDS_SOCKET_PORT=0
+
+  backend:
+    build: ./backend
+    container_name: coconut-backend
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    env_file: ./.env
+    depends_on:
+      - mysql
+      - redis
+    restart: always
+
+  mysql:
+    image: mysql:8.0
+    container_name: coconut-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+    volumes:
+      - mysql-data:/var/lib/mysql
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+
+  redis:
+    image: redis:alpine
+    container_name: coconut-redis
+    ports:
+      - "6379:6379"
+    restart: always
+
+volumes:
+  mysql-data:
